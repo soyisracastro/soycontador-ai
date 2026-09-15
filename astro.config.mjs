@@ -42,6 +42,11 @@ export default defineConfig({
     // alias es mío a propósito: si el curso cambia de sede, de edición o deja
     // de existir, repunto esto y los videos ya publicados siguen sirviendo.
     '/claude': { status: 302, destination: 'https://www.fiscalistas.ai/cursos/claude-para-contadores/' },
+    // El curso de crear webapps, también en Fiscalistas.AI. Dos grafías porque
+    // se dicta en cámara y en el CTA de /recibos: con y sin guion. OJO: se
+    // dicta en público hasta verificar que la página del curso ya existe.
+    '/crearapp': { status: 302, destination: 'https://fiscalistas.ai/cursos/crea-una-webapp-sin-saber-programar/' },
+    '/crear-app': { status: 302, destination: 'https://fiscalistas.ai/cursos/crea-una-webapp-sin-saber-programar/' },
   },
   env: {
     schema: {
@@ -53,6 +58,7 @@ export default defineConfig({
       SENDY_EBOOK_LIST_ID: envField.string({ context: 'server', access: 'public', optional: true }),
       SENDY_LIVE_LIST_ID: envField.string({ context: 'server', access: 'public', optional: true }),
       SENDY_FLUJOS_LIST_ID: envField.string({ context: 'server', access: 'public', optional: true }),
+      SENDY_RECIBOS_LIST_ID: envField.string({ context: 'server', access: 'public', optional: true }),
 
       // Correo de acuse del lead (SES). El dominio ya está verificado con
       // SPF/DKIM, así que el remitente debe ser @soycontador.ai.

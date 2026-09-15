@@ -1,0 +1,333 @@
+---
+/**
+ * /recibos · La ENTREGA del tutorial "XML de nómina a PDF con una app que
+ * construyes tú": el video de la sesión, el prompt completo y el CTA al curso.
+ *
+ * Simplificación de Israel (2026-09-15): una sola página, sin muro de correo.
+ * El circuito es: carrusel en IG → comenta RECIBOS → el DM pide el correo →
+ * entra a la lista `recibos` (43) de Sendy → el correo de confirmación trae
+ * el enlace a ESTA página (confirm_url apunta aquí). El enlace también va en
+ * texto plano en el carrusel, así que quien llegue directo ve lo mismo: la
+ * exclusividad no es el contenido, es que te llegue al correo y te enteres
+ * del siguiente.
+ *
+ * La monetización vive aquí: el CTA del curso "Crea una WebApp sin saber
+ * programar" (Fiscalistas.AI), vía el alias /crearapp. Mismo criterio que
+ * /claude en astro.config.mjs: el alias es nuestro y se repunta si el curso
+ * cambia de sede. La alianza es pública desde 2026-09-08: se dice de quién
+ * es y dónde se paga.
+ *
+ * Va DESNUDA, como /audita y /flujos: quien llega viene por una sola cosa.
+ *
+ * CANDADO DE PUBLICACIÓN: el build de PRODUCCIÓN (VERCEL_ENV) truena
+ * mientras falten VIDEO_ID o PROMPT; los previews y el build local muestran
+ * placeholders para poder revisar. Un carrusel mandando gente a una entrega
+ * vacía quema a la única audiencia que iba a verlo.
+ *
+ * TODO cuando exista el video: agregar el VideoObject al JSON-LD
+ * (uploadDate, thumbnailUrl y duración reales).
+ * TODO antes de mergear: verificar que la página del curso en Fiscalistas.AI
+ * ya exista (el alias /crearapp apunta allá).
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsletterForm from "../components/NewsletterForm.astro";
+import VideoFacade from "../components/VideoFacade.astro";
+import { breadcrumbs, graph, personRef } from "../lib/schema";
+import { SITE } from "../lib/site";
+
+const VIDEO_ID = ""; // TODO(Israel): ID del video no listado en @soycontadorAI
+const PROMPT = ``; // TODO: el prompt final, de entregables/xml-a-pdf-claude/prompt.md
+const COMPLETA = Boolean(VIDEO_ID && PROMPT);
+if (process.env.VERCEL_ENV === "production" && !COMPLETA) {
+  throw new Error(
+    "/recibos está incompleta: faltan VIDEO_ID y/o PROMPT. " +
+      "Es un candado a propósito; ver el comentario en el frontmatter.",
+  );
+}
+
+const tutorial = {
+  "@type": "CreativeWork",
+  "@id": `${SITE.url}/recibos#tutorial`,
+  name: "XML de nómina a PDF: la sesión completa y el prompt",
+  description:
+    "Video de la sesión completa construyendo con IA una app que convierte XML de recibos de nómina CFDI 4.0 en PDF, más el prompt exacto para construir la tuya.",
+  inLanguage: SITE.lang,
+  isAccessibleForFree: true,
+  author: personRef(),
+  publisher: personRef(),
+};
+
+const jsonLd = graph(
+  tutorial,
+  breadcrumbs([
+    { name: "Inicio", path: "/" },
+    { name: "XML a PDF", path: "/recibos" },
+  ]),
+);
+---
+
+<BaseLayout
+  title="Convierte tus XML de nómina en PDF con una app hecha con IA (video + prompt)"
+  description="La sesión completa en video: cómo pedirle a la IA una app que convierte XML de recibos de nómina CFDI 4.0 en PDF, con el prompt exacto listo para copiar. Para contadores en México."
+  jsonLd={jsonLd}
+  desnudo
+>
+  <main>
+    <section class="hero">
+      <div class="container-narrow">
+        <p class="folio">VIDEO + PROMPT · <b>LA SESIÓN COMPLETA</b></p>
+        <h1 class="titulo-xl">Deja de buscar el convertidor. Constrúyelo.</h1>
+        <p class="intro-page">
+          Esta es la sesión completa: le pido la app a la IA con un prompt, le
+          paso recibos de muestra, sale un error, lo corrijo y termina
+          descargando los PDF en un ZIP. Abajo está el video y el prompt
+          exacto, listo para copiar.
+        </p>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="container-narrow">
+        <div class="video-marco">
+          {
+            COMPLETA ? (
+              <VideoFacade
+                videoId={VIDEO_ID}
+                titulo="XML de nómina a PDF: la sesión completa"
+                poster="/assets/recibos-poster.png"
+                cinta="La sesión completa"
+              />
+            ) : (
+              <div class="pendiente" role="img" aria-label="Aquí va el video de la sesión">
+                <span class="pendiente-chip">PENDIENTE</span>
+                <p>
+                  Aquí va el video de la sesión. Este placeholder solo existe
+                  en previews: el build de producción no construye la página
+                  sin él.
+                </p>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="container-narrow">
+        <div class="sec-head"><h2 class="folio">EL PROMPT <b>COMPLETO</b></h2></div>
+        <p class="nota-prompt">
+          Selecciónalo completo y pégalo tal cual. Las cuatro partes (rol,
+          objeto, datos de muestra y método) vienen explicadas en el video.
+        </p>
+        {
+          COMPLETA ? (
+            <pre class="prompt"><code>{PROMPT}</code></pre>
+          ) : (
+            <div class="pendiente chico">
+              <span class="pendiente-chip">PENDIENTE</span>
+              <p>Aquí va el prompt completo, en bloque copiable.</p>
+            </div>
+          )
+        }
+
+        <div class="regla">
+          <p class="regla-titulo">Antes de pasarle un solo XML</p>
+          <p>
+            Mientras construyes la app, los archivos de muestra que le pases a
+            la IA sí viajan a sus servidores. Usa recibos de prueba, nunca los
+            de un cliente. La app terminada sí procesa todo en tu navegador.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque curso">
+      <div class="container-narrow">
+        <div class="sec-head"><h2 class="folio">EL PASO <b>SIGUIENTE</b></h2></div>
+        <div class="curso-card" data-reveal>
+          <p class="curso-kicker">CURSO EN VIVO · CON FISCALISTAS.AI</p>
+          <h3 class="curso-titulo">Crea una webapp sin saber programar</h3>
+          <p class="curso-texto">
+            Lo que viste aquí es una app. En el curso construyes las tuyas:
+            el método completo para pasar de "necesito una herramienta" a
+            tenerla corriendo, sobre trabajo fiscal real. Lo imparte
+            Fiscalistas.AI y ahí mismo se paga; yo pongo el método que acabas
+            de ver.
+          </p>
+          <a class="btn btn-primary" href="/crearapp">Ver el temario del curso</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque cierre">
+      <div class="container-narrow">
+        <p class="folio">PARA NO <b>PERDERLO</b></p>
+        <h2 class="cierre-titulo">¿Te lo mando al correo?</h2>
+        <p class="cierre-texto">
+          Si llegaste directo desde el carrusel, déjame tu correo y te mando
+          el enlace de esta página, más el aviso cuando salga el siguiente
+          tutorial. Es lo mismo que ves aquí: no hay contenido escondido.
+        </p>
+        <div class="cierre-form">
+          <NewsletterForm
+            lista="recibos"
+            boton="Mándamelo al correo"
+            exito="Listo. Confirma tu correo y el enlace te llega ahí."
+            nota="El enlace de esta página al correo, más una idea de IA fiscal cada semana. Te das de baja con un clic."
+          />
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 4.5rem 0 1rem;
+  }
+  .intro-page {
+    max-width: 52ch;
+  }
+  .bloque {
+    padding: 2.6rem 0;
+  }
+  .sec-head {
+    margin-bottom: 1rem;
+  }
+  .video-marco {
+    margin-top: 0.5rem;
+  }
+  .nota-prompt {
+    margin: 0 0 1.2rem;
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+    max-width: 52ch;
+  }
+  /* La misma familia visual que la terminal del sitio: fondo oscuro, mono,
+     esquinas del sistema. Sin semáforo: esto es un documento, no una ventana. */
+  .prompt {
+    background: var(--color-terminal-bg);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    padding: 1.4rem 1.6rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--color-terminal-ink);
+    white-space: pre-wrap;
+    max-height: 34rem;
+    overflow-y: auto;
+  }
+  /* El estado de preview: se ve como lo que es, un hueco reservado. */
+  .pendiente {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    aspect-ratio: 16 / 9;
+    border: 2px dashed var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: 2rem;
+    text-align: center;
+  }
+  .pendiente.chico {
+    aspect-ratio: auto;
+    padding: 2.4rem 2rem;
+  }
+  .pendiente-chip {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--color-ink-dim);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    padding: 0.3rem 0.8rem;
+  }
+  .pendiente p {
+    margin: 0;
+    max-width: 40ch;
+    color: var(--color-ink-dim);
+    font-size: 0.9rem;
+  }
+  .regla {
+    margin-top: 2rem;
+    background: var(--color-accent-soft);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 1.4rem 1.6rem;
+  }
+  .regla-titulo {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .regla p:last-child {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+  }
+
+  /* El CTA del curso: una sola tarjeta, un solo botón. */
+  .curso-card {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.2rem;
+  }
+  .curso-kicker {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+  .curso-titulo {
+    margin: 0.8rem 0 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .curso-texto {
+    margin: 1rem 0 1.6rem;
+    color: var(--color-ink-soft);
+    font-size: 0.98rem;
+    max-width: 56ch;
+  }
+
+  /* El correo, al final y sin muro: banda oscura como en /flujos porque el
+     campo de NewsletterForm está pintado para fondo de terminal. */
+  .cierre {
+    background: var(--color-line-strong);
+    padding: 3.6rem 0 4rem;
+  }
+  .cierre .folio {
+    color: #8da2c0;
+  }
+  .cierre .folio b {
+    color: var(--color-terminal-ok);
+  }
+  .cierre-titulo {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin: 0.9rem 0 0;
+  }
+  .cierre-texto {
+    margin: 1rem 0 0;
+    max-width: 48ch;
+    color: #aebbd1;
+  }
+  .cierre-form {
+    margin-top: 1.8rem;
+    max-width: 34rem;
+  }
+</style>

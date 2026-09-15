@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
   const referrer = typeof raw.referrer === "string" ? raw.referrer.slice(0, 500) : undefined;
   // Lista blanca: el navegador elige entre nombres conocidos, nunca un ID.
-  const LISTAS: Lista[] = ["general", "live", "ebook", "flujos"];
+  const LISTAS: Lista[] = ["general", "live", "ebook", "flujos", "recibos"];
   const lista: Lista = LISTAS.find((l) => l === raw.lista) ?? "general";
 
   const status = await suscribir({ email, referrer, lista });

@@ -142,8 +142,17 @@ le queda a medias a las dos:
 | `live` (41) | El aviso del Jueves de ContadorIA | `/jueves` |
 | `ebook` (40) | La muestra del libro | `/ebook` |
 | `flujos` (42) | La guía de los 3 flujos híbridos | `/flujos` |
+| `recibos` (43) | El enlace a la entrega XML→PDF (video + prompt) | el DM de IG, y el formulario de `/recibos` |
 
-Las cuatro son **doble opt-in** y las cuatro tienen su correo de bienvenida
+`recibos` es distinta en dos cosas (simplificación de Israel, 2026-09-15).
+Uno: su alta principal NO viene de un formulario del sitio sino del DM de
+Instagram (comenta RECIBOS → el DM pide el correo); el formulario de
+`/recibos` es el respaldo para quien llega directo. Dos: su `confirm_url` NO
+aterriza en `/dentro` sino en `/recibos`, que ES la entrega (video + prompt +
+CTA al curso), abierta y sin muro: la exclusividad no es el contenido, es que
+te llegue al correo. Su autoresponder entrega el ENLACE, no un adjunto.
+
+Las cinco son **doble opt-in** y todas tienen su correo de bienvenida
 colgado como autoresponder. En tres de ellas ese correo entrega un archivo
 adjunto; en `live` no entrega nada, porque esa lista no promete descarga: su
 llamado a la acción es suscribirse al canal y activar la campanita, que es lo
